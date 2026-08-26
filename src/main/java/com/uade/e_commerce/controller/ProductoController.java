@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/productos")
@@ -37,5 +40,33 @@ public class ProductoController {
         Producto nuevoProducto = productoService.crearProducto(producto);
         return ResponseEntity.status(201).body(nuevoProducto);
     }
+
+     // PUT /api/productos/{id} modificar un producto existente
+    @PutMapping("/{id}")
+    public ResponseEntity<Producto> modificarProducto(@PathVariable Long id, @RequestBody Producto producto) {
+        Producto actualizado = productoService.actualizarProducto(id, producto);
+        return ResponseEntity.ok(actualizado);
+    }
+
+     // DELETE /api/productos/{id} eliminar un producto del catalogo
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
+        productoService.eliminarProducto(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // GET /api/productos/categoria/{categoria} filtrar productos por categoria
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<Producto>> filtrarPorCategoria(@PathVariable String categoria) {
+        List<Producto> productos = productoService.filtrarPorCategoria(categoria);
+        return ResponseEntity.ok(productos);
+    }
+
+    @ExceptionHandler(ProductoService.ProductoNoEncontradoException.class)
+    public ResponseEntity<Map<String, String>> productoNoEncontrado() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", "Producto no encontrado"));
+    }
+
 
 }
