@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.uade.e_commerce.model.Carrito;
 import com.uade.e_commerce.model.ItemCarrito;
+import com.uade.e_commerce.model.Usuario;
 import com.uade.e_commerce.repository.CarritoRepository;
 import com.uade.e_commerce.repository.ItemCarritoRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,28 +22,31 @@ import lombok.RequiredArgsConstructor;
 public class CarritoService {
     private final CarritoRepository carritoRepository;
     private final ItemCarritoRepository itemCarritoRepository;
+    private final UsuarioService usuarioService;
+    private final ProductoService productoService;
 
     public Carrito getCarritoByUsuarioId(Long usuarioId) {
-        return carritoRepository.findByUsuarioId(usuarioId)
+        return carritoRepository.findByUsuario_Id(usuarioId)
                 .orElseGet(() -> createCarrito(usuarioId));
     }
 
     private Carrito createCarrito(Long usuarioId) {
         Carrito carrito = new Carrito();
-        carrito.setUsuarioId(usuarioId);
+        Usuario usuario = usuarioService.obtenerPorId(usuarioId);
+        carrito.setUsuario(usuario);
         return carritoRepository.save(carrito);
     }
 
     public List<ItemCarrito> getAllItemCarritos(Long usuarioId) {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
-        return itemCarritoRepository.findByCarritoId(carrito.getId());
+        return itemCarritoRepository.findByCarrito_Id(carrito.getId());
     }
 
     public ItemCarrito addItemCarrito(Long usuarioId, Long productoId, Integer cantidad, BigDecimal precioUnitario) {
 
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
 
-        Optional<ItemCarrito> existente = itemCarritoRepository.findByCarritoIdAndProductoId(carrito.getId(),
+        Optional<ItemCarrito> existente = itemCarritoRepository.findByCarrito_IdAndProducto_Id(carrito.getId(),
                 productoId);
 
         if (existente.isPresent()) {
@@ -51,8 +56,8 @@ public class CarritoService {
         }
 
         ItemCarrito nuevo = new ItemCarrito();
-        nuevo.setCarritoId(carrito.getId());
-        nuevo.setProductoId(productoId);
+        nuevo.setCarrito(carrito);
+        nuevo.setProducto(productoService.obtenerPorId(productoId));
         nuevo.setCantidad(cantidad);
         nuevo.setPrecioUnitario(precioUnitario);
         return itemCarritoRepository.save(nuevo);
@@ -70,7 +75,7 @@ public class CarritoService {
 
     public void eliminarItem(Long usuarioId, Long productoId) {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
-        Optional<ItemCarrito> existente = itemCarritoRepository.findByCarritoIdAndProductoId(carrito.getId(),
+        Optional<ItemCarrito> existente = itemCarritoRepository.findByCarrito_IdAndProducto_Id(carrito.getId(),
                 productoId);
 
         existente.ifPresent(itemCarritoRepository::delete);
@@ -79,8 +84,7 @@ public class CarritoService {
     @Transactional
     public void vaciarCarrito(Long usuarioId) {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
-        List<ItemCarrito> items = itemCarritoRepository.findByCarritoId(carrito.getId());
+        List<ItemCarrito> items = itemCarritoRepository.findByCarrito_Id(carrito.getId());
         itemCarritoRepository.deleteAll(items);
     }
-
 }
