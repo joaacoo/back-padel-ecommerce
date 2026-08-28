@@ -14,7 +14,7 @@ public class ProductoService {
 
     // GET /api/productos (Obtener todos)
     public List<Producto> obtenerTodos() {
-        return productoRepository.findAll();
+        return productoRepository.findAllByOrderByNombreAsc();
     }
 
     // GET /api/productos/{id} (Obtener por ID)
@@ -53,6 +53,11 @@ public class ProductoService {
     // GET /api/productos/categoria/{categoria} (Filtrar por categoria)
     public List<Producto> filtrarPorCategoria(String categoria) {// Busca por categoria
         return productoRepository.findByCategoriaIgnoreCase(categoria);
+    }
+
+    // GET /api/productos/categorias (Listado de categorias disponibles, sin repetidas)
+    public List<String> obtenerCategorias() {
+        return productoRepository.findCategoriasDistinct();
     }
 
     public static class ProductoNoEncontradoException extends RuntimeException {

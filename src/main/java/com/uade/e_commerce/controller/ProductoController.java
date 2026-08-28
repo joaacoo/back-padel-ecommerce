@@ -62,6 +62,13 @@ public class ProductoController {
         return ResponseEntity.ok(productos);
     }
 
+    // GET /api/productos/categorias listar las categorias disponibles en el sitio
+    @GetMapping("/categorias")
+    public ResponseEntity<List<String>> obtenerCategorias() {
+        List<String> categorias = productoService.obtenerCategorias();
+        return ResponseEntity.ok(categorias);
+    }
+
     @ExceptionHandler(ProductoService.ProductoNoEncontradoException.class)
     public ResponseEntity<Map<String, String>> productoNoEncontrado() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
