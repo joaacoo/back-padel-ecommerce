@@ -26,7 +26,7 @@ public class UsuarioService {
         }
 
         String passwordProtegida = passwordService.hashear(datos.password());
-        Usuario usuario = new Usuario(datos.nombre().trim(), email, passwordProtegida);
+        Usuario usuario = new Usuario(datos.nombre().trim(), datos.apellido().trim(), datos.nombreUsuario().trim(), email, passwordProtegida);
         return usuarioRepository.save(usuario);
     }
 
@@ -51,7 +51,7 @@ public class UsuarioService {
     }
 
     private void validarCampos(RegistroUsuarioRequest datos) {
-        if (datos == null || estaVacio(datos.nombre()) || estaVacio(datos.email())
+        if (datos == null || estaVacio(datos.nombre()) || estaVacio(datos.apellido()) || estaVacio(datos.nombreUsuario()) || estaVacio(datos.email())
                 || estaVacio(datos.password())) {
             throw new DatosInvalidosException();
         }

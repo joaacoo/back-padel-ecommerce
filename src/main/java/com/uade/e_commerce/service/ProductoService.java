@@ -28,7 +28,8 @@ public class ProductoService {
     }
 
     // PUT /api/productos/{id} (Modificar producto)
-    public Producto actualizarProducto(Long id, Producto datosActualizados) { //busca producto por ID con manejo de excepcion y lo actualiza
+    public Producto actualizarProducto(Long id, Producto datosActualizados) { // busca producto por ID con manejo de
+                                                                              // excepcion y lo actualiza
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(ProductoNoEncontradoException::new);
 
@@ -42,7 +43,7 @@ public class ProductoService {
     }
 
     // DELETE /api/productos/{id} (Eliminar producto)
-    public void eliminarProducto(Long id) { //busca producto por id con manejo de excepcion para eliminarlo
+    public void eliminarProducto(Long id) { // busca producto por id con manejo de excepcion para eliminarlo
         if (!productoRepository.existsById(id)) {
             throw new ProductoNoEncontradoException();
         }
@@ -50,7 +51,7 @@ public class ProductoService {
     }
 
     // GET /api/productos/categoria/{categoria} (Filtrar por categoria)
-    public List<Producto> filtrarPorCategoria(String categoria) {//Busca por categoria 
+    public List<Producto> filtrarPorCategoria(String categoria) {// Busca por categoria
         return productoRepository.findByCategoriaIgnoreCase(categoria);
     }
 
