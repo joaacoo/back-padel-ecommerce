@@ -1,12 +1,14 @@
 package com.uade.e_commerce.controller;
 
-import tools.jackson.databind.ObjectMapper;
 import com.uade.e_commerce.model.Usuario;
 import com.uade.e_commerce.repository.UsuarioRepository;
 import com.uade.e_commerce.service.PasswordService;
+
+import tools.jackson.databind.ObjectMapper;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfiguration
 class UsuarioControllerTests {
 
     @Autowired
@@ -92,7 +94,7 @@ class UsuarioControllerTests {
     @Test
     void iniciaSesionSinDevolverLaPassword() throws Exception {
         Usuario guardado = usuarioRepository.save(new Usuario(
-                "Maria", "maria@example.com", passwordService.hashear("secreto")));
+                "Maria", "maria@example.com", passwordService.hashear("secreto"), null, null));
 
         Map<String, String> datos = Map.of(
                 "email", "MARIA@example.com",
@@ -111,7 +113,7 @@ class UsuarioControllerTests {
     @Test
     void rechazaCredencialesIncorrectas() throws Exception {
         usuarioRepository.save(new Usuario(
-                "Pedro", "pedro@example.com", passwordService.hashear("correcta")));
+                "Pedro", "pedro@example.com", passwordService.hashear("correcta"), null, null));
 
         Map<String, String> datos = Map.of(
                 "email", "pedro@example.com",
@@ -126,7 +128,7 @@ class UsuarioControllerTests {
     @Test
     void obtieneUnUsuarioPorIdSinDevolverLaPassword() throws Exception {
         Usuario guardado = usuarioRepository.save(new Usuario(
-                "Sofia", "sofia@example.com", passwordService.hashear("123456")));
+                "Sofia", "sofia@example.com", passwordService.hashear("123456"), null, null));
 
         mockMvc.perform(get("/api/users/{id}", guardado.getId()))
                 .andExpect(status().isOk())

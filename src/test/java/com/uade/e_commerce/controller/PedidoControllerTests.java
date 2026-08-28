@@ -44,7 +44,7 @@ class PedidoControllerTests {
     @Test
     void obtienePedidoSinDevolverDatosDelUsuario() throws Exception {
         Usuario usuario = usuarioService.registrar(
-                new RegistroUsuarioRequest("Ana", "ana@example.com", "secreto"));
+                new RegistroUsuarioRequest("Ana", "ana@example.com", "secreto", null, null));
         Pedido pedido = new Pedido(null, LocalDateTime.now(), 150000.0, usuario);
         pedido = pedidoRepository.save(pedido);
 
@@ -60,7 +60,7 @@ class PedidoControllerTests {
     @Test
     void listaPedidosSinDevolverDatosDelUsuario() throws Exception {
         Usuario usuario = usuarioService.registrar(
-                new RegistroUsuarioRequest("Juan", "juan@example.com", "secreto"));
+                new RegistroUsuarioRequest("Juan", "juan@example.com", "secreto", null, null));
         pedidoRepository.save(new Pedido(null, LocalDateTime.now(), 90000.0, usuario));
 
         mockMvc.perform(get("/api/users/{id}/pedidos", usuario.getId()))
