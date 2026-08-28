@@ -19,4 +19,5 @@ public class Producto {
     private Double precio; // 200000
     private Integer stock; // 15
     private String categoria; // Paletas
+    private String imagenUrl; // URL de la foto del producto
 }

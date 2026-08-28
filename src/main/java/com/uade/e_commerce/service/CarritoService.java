@@ -45,19 +45,31 @@ public class CarritoService {
     public ItemCarrito addItemCarrito(Long usuarioId, Long productoId, Integer cantidad, BigDecimal precioUnitario) {
 
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
+        com.uade.e_commerce.model.Producto producto = productoService.obtenerPorId(productoId);
+        if (producto == null) {
+            throw new RuntimeException("Producto no encontrado");
+        }
 
         Optional<ItemCarrito> existente = itemCarritoRepository.findByCarrito_IdAndProducto_Id(carrito.getId(),
                 productoId);
 
         if (existente.isPresent()) {
             ItemCarrito item = existente.get();
-            item.setCantidad(item.getCantidad() + cantidad); // ← SUMA
+            int nuevaCantidad = item.getCantidad() + cantidad;
+            if (nuevaCantidad > producto.getStock()) {
+                throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
+            }
+            item.setCantidad(nuevaCantidad); // ← SUMA
             return itemCarritoRepository.save(item);
+        }
+
+        if (cantidad > producto.getStock()) {
+            throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
         }
 
         ItemCarrito nuevo = new ItemCarrito();
         nuevo.setCarrito(carrito);
-        nuevo.setProducto(productoService.obtenerPorId(productoId));
+        nuevo.setProducto(producto);
         nuevo.setCantidad(cantidad);
         nuevo.setPrecioUnitario(precioUnitario);
         return itemCarritoRepository.save(nuevo);
@@ -67,6 +79,9 @@ public class CarritoService {
         Optional<ItemCarrito> existente = itemCarritoRepository.findById(itemId);
         if (existente.isPresent()) {
             ItemCarrito item = existente.get();
+            if (cantidad > item.getProducto().getStock()) {
+                throw new RuntimeException("Stock insuficiente para el producto: " + item.getProducto().getNombre());
+            }
             item.setCantidad(cantidad);
             return itemCarritoRepository.save(item);
         }

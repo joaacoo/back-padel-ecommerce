@@ -38,6 +38,7 @@ public class ProductoService {
         producto.setPrecio(datosActualizados.getPrecio());
         producto.setStock(datosActualizados.getStock());
         producto.setCategoria(datosActualizados.getCategoria());
+        producto.setImagenUrl(datosActualizados.getImagenUrl());
 
         return productoRepository.save(producto);
     }
