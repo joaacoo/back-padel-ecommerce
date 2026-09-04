@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -18,7 +20,7 @@ public class Usuario {
 
     private String nombre;
     private String apellido;
-    
+
     @Column(unique = true)
     private String nombreUsuario;
 
@@ -29,15 +31,22 @@ public class Usuario {
     @JsonIgnore
     private String password;
 
+    private String sexo; // "M", "F" u "Otro"
+
+    private LocalDate fechaNacimiento;
+
     protected Usuario() {
     }
 
-    public Usuario(String nombre, String apellido, String nombreUsuario, String email, String password) {
+    public Usuario(String nombre, String apellido, String nombreUsuario, String email, String password,
+            String sexo, LocalDate fechaNacimiento) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.nombreUsuario = nombreUsuario;
         this.email = email;
         this.password = password;
+        this.sexo = sexo;
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public Long getId() {
@@ -62,5 +71,13 @@ public class Usuario {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
     }
 }

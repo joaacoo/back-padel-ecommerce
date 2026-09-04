@@ -26,7 +26,8 @@ public class UsuarioService {
         }
 
         String passwordProtegida = passwordService.hashear(datos.password());
-        Usuario usuario = new Usuario(datos.nombre().trim(), datos.apellido().trim(), datos.nombreUsuario().trim(), email, passwordProtegida);
+        Usuario usuario = new Usuario(datos.nombre().trim(), datos.apellido().trim(), datos.nombreUsuario().trim(),
+                email, passwordProtegida, datos.sexo(), datos.fechaNacimiento());
         return usuarioRepository.save(usuario);
     }
 

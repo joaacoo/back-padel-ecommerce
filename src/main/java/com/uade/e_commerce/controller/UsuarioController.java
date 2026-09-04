@@ -44,7 +44,8 @@ public class UsuarioController {
     }
 
     private UsuarioResponse aResponse(Usuario usuario) {
-        return new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail());
+        return new UsuarioResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getSexo(),
+                usuario.getFechaNacimiento());
     }
 
     @ExceptionHandler(UsuarioService.EmailDuplicadoException.class)

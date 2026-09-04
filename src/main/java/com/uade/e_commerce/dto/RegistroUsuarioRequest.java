@@ -1,4 +1,7 @@
 package com.uade.e_commerce.dto;
 
-public record RegistroUsuarioRequest(String nombre, String apellido, String nombreUsuario, String email, String password) {
+import java.time.LocalDate;
+
+public record RegistroUsuarioRequest(String nombre, String apellido, String nombreUsuario, String email,
+        String password, String sexo, LocalDate fechaNacimiento) {
 }
