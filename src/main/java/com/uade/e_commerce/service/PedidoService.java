@@ -10,7 +10,6 @@ import com.uade.e_commerce.repository.PedidoRepository;
 import com.uade.e_commerce.repository.ProductoRepository;
 import com.uade.e_commerce.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,7 +47,7 @@ public class PedidoService {
     }
 
     // POST /api/pedidos
-    @Transactional
+    @Transaccional
     public Pedido crearPedido(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));

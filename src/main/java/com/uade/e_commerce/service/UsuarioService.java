@@ -19,6 +19,7 @@ public class UsuarioService {
         this.passwordService = passwordService;
     }
 
+    @Transaccional
     public Usuario registrar(RegistroUsuarioRequest datos) {
         validarCampos(datos);
 

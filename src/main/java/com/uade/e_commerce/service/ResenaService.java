@@ -23,6 +23,7 @@ public class ResenaService {
     private final UsuarioRepository usuarioRepository;
 
     // POST /api/productos/{id}/resenas
+    @Transaccional
     public Resena crearResena(Long productoId, Long usuarioId, String comentario, Integer puntuacion) {
         Producto producto = productoRepository.findById(productoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
@@ -43,6 +44,7 @@ public class ResenaService {
     }
 
     // DELETE /api/resenas/{id}
+    @Transaccional
     public void eliminarResena(Long id) {
         resenaRepository.deleteById(id);
     }

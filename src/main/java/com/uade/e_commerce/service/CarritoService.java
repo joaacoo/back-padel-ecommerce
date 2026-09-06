@@ -16,8 +16,6 @@ import com.uade.e_commerce.repository.ItemCarritoRepository;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.transaction.annotation.Transactional;
-
 @Service
 @RequiredArgsConstructor
 
@@ -44,6 +42,7 @@ public class CarritoService {
         return itemCarritoRepository.findByCarrito_Id(carrito.getId());
     }
 
+    @Transaccional
     public ItemCarrito addItemCarrito(Long usuarioId, Long productoId, Integer cantidad, BigDecimal precioUnitario) {
 
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
@@ -77,6 +76,7 @@ public class CarritoService {
         return itemCarritoRepository.save(nuevo);
     }
 
+    @Transaccional
     public ItemCarrito actualizarCantidad(Long itemId, Integer cantidad) {
         Optional<ItemCarrito> existente = itemCarritoRepository.findById(itemId);
         if (existente.isPresent()) {
@@ -90,6 +90,7 @@ public class CarritoService {
         throw new ResourceNotFoundException("Item no encontrado");
     }
 
+    @Transaccional
     public void eliminarItem(Long usuarioId, Long productoId) {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
         Optional<ItemCarrito> existente = itemCarritoRepository.findByCarrito_IdAndProducto_Id(carrito.getId(),
@@ -98,7 +99,7 @@ public class CarritoService {
         existente.ifPresent(itemCarritoRepository::delete);
     }
 
-    @Transactional
+    @Transaccional
     public void vaciarCarrito(Long usuarioId) {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
         List<ItemCarrito> items = itemCarritoRepository.findByCarrito_Id(carrito.getId());

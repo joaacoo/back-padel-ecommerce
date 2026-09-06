@@ -24,11 +24,13 @@ public class ProductoService {
     }
 
     // POST /api/productos (Crear producto)
+    @Transaccional
     public Producto crearProducto(Producto producto) {
         return productoRepository.save(producto);
     }
 
     // PUT /api/productos/{id} (Modificar producto)
+    @Transaccional
     public Producto actualizarProducto(Long id, Producto datosActualizados) { // busca producto por ID con manejo de
                                                                               // excepcion y lo actualiza
         Producto producto = productoRepository.findById(id)
@@ -45,6 +47,7 @@ public class ProductoService {
     }
 
     // DELETE /api/productos/{id} (Eliminar producto)
+    @Transaccional
     public void eliminarProducto(Long id) { // busca producto por id con manejo de excepcion para eliminarlo
         if (!productoRepository.existsById(id)) {
             throw new ResourceNotFoundException("Producto no encontrado");
