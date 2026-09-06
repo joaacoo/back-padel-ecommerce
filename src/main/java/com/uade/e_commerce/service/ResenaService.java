@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.Producto;
 import com.uade.e_commerce.model.Usuario;
 import com.uade.e_commerce.repository.ProductoRepository;
@@ -24,9 +25,9 @@ public class ResenaService {
     // POST /api/productos/{id}/resenas
     public Resena crearResena(Long productoId, Long usuarioId, String comentario, Integer puntuacion) {
         Producto producto = productoRepository.findById(productoId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         
         Resena resena = new Resena();
         resena.setProducto(producto);

@@ -1,5 +1,6 @@
 package com.uade.e_commerce.service;
 
+import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.Producto;
 import com.uade.e_commerce.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class ProductoService {
     public Producto actualizarProducto(Long id, Producto datosActualizados) { // busca producto por ID con manejo de
                                                                               // excepcion y lo actualiza
         Producto producto = productoRepository.findById(id)
-                .orElseThrow(ProductoNoEncontradoException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
 
         producto.setNombre(datosActualizados.getNombre());
         producto.setDescripcion(datosActualizados.getDescripcion());
@@ -46,7 +47,7 @@ public class ProductoService {
     // DELETE /api/productos/{id} (Eliminar producto)
     public void eliminarProducto(Long id) { // busca producto por id con manejo de excepcion para eliminarlo
         if (!productoRepository.existsById(id)) {
-            throw new ProductoNoEncontradoException();
+            throw new ResourceNotFoundException("Producto no encontrado");
         }
         productoRepository.deleteById(id);
     }
@@ -59,8 +60,5 @@ public class ProductoService {
     // GET /api/productos/categorias (Listado de categorias disponibles, sin repetidas)
     public List<String> obtenerCategorias() {
         return productoRepository.findCategoriasDistinct();
-    }
-
-    public static class ProductoNoEncontradoException extends RuntimeException {
     }
 }

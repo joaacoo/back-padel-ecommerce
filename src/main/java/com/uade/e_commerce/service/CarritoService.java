@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.uade.e_commerce.exception.ArgumentInvalidException;
+import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.Carrito;
 import com.uade.e_commerce.model.ItemCarrito;
 import com.uade.e_commerce.model.Usuario;
@@ -47,7 +49,7 @@ public class CarritoService {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
         com.uade.e_commerce.model.Producto producto = productoService.obtenerPorId(productoId);
         if (producto == null) {
-            throw new RuntimeException("Producto no encontrado");
+            throw new ResourceNotFoundException("Producto no encontrado");
         }
 
         Optional<ItemCarrito> existente = itemCarritoRepository.findByCarrito_IdAndProducto_Id(carrito.getId(),
@@ -57,14 +59,14 @@ public class CarritoService {
             ItemCarrito item = existente.get();
             int nuevaCantidad = item.getCantidad() + cantidad;
             if (nuevaCantidad > producto.getStock()) {
-                throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
+                throw new ArgumentInvalidException("Stock insuficiente para el producto: " + producto.getNombre());
             }
             item.setCantidad(nuevaCantidad); // ← SUMA
             return itemCarritoRepository.save(item);
         }
 
         if (cantidad > producto.getStock()) {
-            throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
+            throw new ArgumentInvalidException("Stock insuficiente para el producto: " + producto.getNombre());
         }
 
         ItemCarrito nuevo = new ItemCarrito();
@@ -80,12 +82,12 @@ public class CarritoService {
         if (existente.isPresent()) {
             ItemCarrito item = existente.get();
             if (cantidad > item.getProducto().getStock()) {
-                throw new RuntimeException("Stock insuficiente para el producto: " + item.getProducto().getNombre());
+                throw new ArgumentInvalidException("Stock insuficiente para el producto: " + item.getProducto().getNombre());
             }
             item.setCantidad(cantidad);
             return itemCarritoRepository.save(item);
         }
-        throw new RuntimeException("Item no encontrado");
+        throw new ResourceNotFoundException("Item no encontrado");
     }
 
     public void eliminarItem(Long usuarioId, Long productoId) {

@@ -2,6 +2,8 @@ package com.uade.e_commerce.service;
 
 import com.uade.e_commerce.dto.LoginUsuarioRequest;
 import com.uade.e_commerce.dto.RegistroUsuarioRequest;
+import com.uade.e_commerce.exception.ArgumentInvalidException;
+import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.Usuario;
 import com.uade.e_commerce.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class UsuarioService {
 
         String email = datos.email().trim().toLowerCase();
         if (usuarioRepository.existsByEmailIgnoreCase(email)) {
-            throw new EmailDuplicadoException();
+            throw new ArgumentInvalidException("El email ya esta registrado");
         }
 
         String passwordProtegida = passwordService.hashear(datos.password());
@@ -33,14 +35,14 @@ public class UsuarioService {
 
     public Usuario iniciarSesion(LoginUsuarioRequest datos) {
         if (datos == null || estaVacio(datos.email()) || estaVacio(datos.password())) {
-            throw new DatosInvalidosException();
+            throw new ArgumentInvalidException("Email y password son obligatorios");
         }
 
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(datos.email().trim())
-                .orElseThrow(CredencialesInvalidasException::new);
+                .orElseThrow(() -> new ArgumentInvalidException("Email o password incorrectos"));
 
         if (!passwordService.coincide(datos.password(), usuario.getPassword())) {
-            throw new CredencialesInvalidasException();
+            throw new ArgumentInvalidException("Email o password incorrectos");
         }
 
         return usuario;
@@ -48,29 +50,17 @@ public class UsuarioService {
 
     public Usuario obtenerPorId(Long id) {
         return usuarioRepository.findById(id)
-                .orElseThrow(UsuarioNoEncontradoException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
     }
 
     private void validarCampos(RegistroUsuarioRequest datos) {
         if (datos == null || estaVacio(datos.nombre()) || estaVacio(datos.apellido()) || estaVacio(datos.nombreUsuario()) || estaVacio(datos.email())
                 || estaVacio(datos.password())) {
-            throw new DatosInvalidosException();
+            throw new ArgumentInvalidException("Nombre, email y password son obligatorios");
         }
     }
 
     private boolean estaVacio(String valor) {
         return valor == null || valor.isBlank();
-    }
-
-    public static class EmailDuplicadoException extends RuntimeException {
-    }
-
-    public static class DatosInvalidosException extends RuntimeException {
-    }
-
-    public static class CredencialesInvalidasException extends RuntimeException {
-    }
-
-    public static class UsuarioNoEncontradoException extends RuntimeException {
     }
 }

@@ -1,5 +1,7 @@
 package com.uade.e_commerce.service;
 
+import com.uade.e_commerce.exception.ArgumentInvalidException;
+import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.ItemCarrito;
 import com.uade.e_commerce.model.Pedido;
 import com.uade.e_commerce.model.Producto;
@@ -34,13 +36,13 @@ public class PedidoService {
     // GET /api/pedidos/{id}
     public Pedido obtenerPorId(Long id) {
         return pedidoRepository.findById(id)
-                .orElseThrow(PedidoNoEncontradoException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado"));
     }
 
     // GET /api/users/{id}/pedidos
     public List<Pedido> obtenerPedidosDeUsuario(Long usuarioId) {
         if (!usuarioRepository.existsById(usuarioId)) {
-            throw new UsuarioNoEncontradoException();
+            throw new ResourceNotFoundException("Usuario no encontrado");
         }
         return pedidoRepository.findByUsuarioId(usuarioId);
     }
@@ -49,18 +51,18 @@ public class PedidoService {
     @Transactional
     public Pedido crearPedido(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(UsuarioNoEncontradoException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         List<ItemCarrito> items = carritoService.getAllItemCarritos(usuarioId);
         if (items.isEmpty()) {
-            throw new RuntimeException("El carrito está vacío");
+            throw new ArgumentInvalidException("El carrito está vacío");
         }
 
         double total = 0.0;
         for (ItemCarrito item : items) {
             Producto producto = item.getProducto();
             if (producto.getStock() < item.getCantidad()) {
-                throw new RuntimeException("Stock insuficiente para el producto: " + producto.getNombre());
+                throw new ArgumentInvalidException("Stock insuficiente para el producto: " + producto.getNombre());
             }
             producto.setStock(producto.getStock() - item.getCantidad());
             productoRepository.save(producto);
@@ -77,11 +79,5 @@ public class PedidoService {
         carritoService.vaciarCarrito(usuarioId);
 
         return guardado;
-    }
-
-    public static class PedidoNoEncontradoException extends RuntimeException {
-    }
-
-    public static class UsuarioNoEncontradoException extends RuntimeException {
     }
 }
