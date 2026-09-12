@@ -19,6 +19,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import lombok.Builder;
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
@@ -57,7 +59,7 @@ public class Usuario implements UserDetails {
             String sexo, LocalDate fechaNacimiento) {
         this(nombre, apellido, nombreUsuario, email, password, sexo, fechaNacimiento, Role.USER);
     }
-
+    @Builder
     public Usuario(String nombre, String apellido, String nombreUsuario, String email, String password,
             String sexo, LocalDate fechaNacimiento, Role role) {
         this.nombre = nombre;

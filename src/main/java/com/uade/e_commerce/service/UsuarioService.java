@@ -7,16 +7,18 @@ import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.Usuario;
 import com.uade.e_commerce.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import com.uade.e_commerce.model.Role;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PasswordService passwordService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordService passwordService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordService = passwordService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transaccional
@@ -28,10 +30,18 @@ public class UsuarioService {
             throw new ArgumentInvalidException("El email ya esta registrado");
         }
 
-        String passwordProtegida = passwordService.hashear(datos.password());
-        Usuario usuario = new Usuario(datos.nombre().trim(), datos.apellido().trim(), datos.nombreUsuario().trim(),
-                email, passwordProtegida, datos.sexo(), datos.fechaNacimiento());
-        return usuarioRepository.save(usuario);
+        String passwordProtegida = passwordEncoder.encode(datos.password());
+        Usuario usuario = Usuario.builder()
+        .nombre(datos.nombre().trim())
+        .apellido(datos.apellido().trim())
+        .nombreUsuario(datos.nombreUsuario().trim())
+        .email(email)
+        .password(passwordProtegida)
+        .sexo(datos.sexo())
+        .fechaNacimiento(datos.fechaNacimiento())
+        .role(Role.USER)
+        .build();
+return usuarioRepository.save(usuario);
     }
 
     public Usuario iniciarSesion(LoginUsuarioRequest datos) {
@@ -42,7 +52,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByEmailIgnoreCase(datos.email().trim())
                 .orElseThrow(() -> new ArgumentInvalidException("Email o password incorrectos"));
 
-        if (!passwordService.coincide(datos.password(), usuario.getPassword())) {
+        if (!passwordEncoder.matches(datos.password(), usuario.getPassword())) {
             throw new ArgumentInvalidException("Email o password incorrectos");
         }
 
