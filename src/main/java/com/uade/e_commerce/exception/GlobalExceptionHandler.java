@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Map;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import java.util.HashMap;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,5 +22,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> argumentInvalid(ArgumentInvalidException ex) {
         return ResponseEntity.badRequest()
                 .body(Map.of("error", ex.getMessage()));
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> validationErrors(
+        MethodArgumentNotValidException ex) {
+
+    Map<String, String> errores = new HashMap<>();
+
+    ex.getBindingResult()
+            .getFieldErrors()
+            .forEach(error ->
+                    errores.put(
+                            error.getField(),
+                            error.getDefaultMessage()
+                    )
+            );
+
+    return ResponseEntity.badRequest().body(errores);
     }
 }

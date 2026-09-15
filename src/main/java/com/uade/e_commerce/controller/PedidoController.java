@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 public class PedidoController {
@@ -23,7 +24,7 @@ public class PedidoController {
     // POST /api/pedidos
     @PostMapping("/api/pedidos")
     public ResponseEntity<PedidoResponse> crearPedido(
-            @RequestBody CrearPedidoRequest datos) {
+            @Valid @RequestBody CrearPedidoRequest datos) {
 
         Pedido pedido = pedidoService.crearPedido(datos.usuarioId());
 
