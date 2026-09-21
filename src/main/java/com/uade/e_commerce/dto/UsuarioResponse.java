@@ -1,6 +1,17 @@
 package com.uade.e_commerce.dto;
 
 import java.time.LocalDate;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-public record UsuarioResponse(Long id, String nombre, String email, String sexo, LocalDate fechaNacimiento) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UsuarioResponse {
+    private Long id;
+    private String nombre;
+    private String email;
+    private String sexo;
+    private LocalDate fechaNacimiento;
 }

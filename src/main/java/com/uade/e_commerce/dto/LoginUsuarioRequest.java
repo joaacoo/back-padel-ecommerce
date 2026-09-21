@@ -1,4 +1,13 @@
 package com.uade.e_commerce.dto;
 
-public record LoginUsuarioRequest(String email, String password) {
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginUsuarioRequest {
+    private String email;
+    private String password;
 }

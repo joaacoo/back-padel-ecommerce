@@ -25,34 +25,34 @@ public class UsuarioService {
     public Usuario registrar(RegistroUsuarioRequest datos) {
         validarCampos(datos);
 
-        String email = datos.email().trim().toLowerCase();
+        String email = datos.getEmail().trim().toLowerCase();
         if (usuarioRepository.existsByEmailIgnoreCase(email)) {
             throw new ArgumentInvalidException("El email ya esta registrado");
         }
 
-        String passwordProtegida = passwordEncoder.encode(datos.password());
+        String passwordProtegida = passwordEncoder.encode(datos.getPassword());
         Usuario usuario = Usuario.builder()
-                .nombre(datos.nombre().trim())
-                .apellido(datos.apellido().trim())
-                .nombreUsuario(datos.nombreUsuario().trim())
+                .nombre(datos.getNombre().trim())
+                .apellido(datos.getApellido().trim())
+                .nombreUsuario(datos.getNombreUsuario().trim())
                 .email(email)
                 .password(passwordProtegida)
-                .sexo(datos.sexo())
-                .fechaNacimiento(datos.fechaNacimiento())
+                .sexo(datos.getSexo())
+                .fechaNacimiento(datos.getFechaNacimiento())
                 .role(Role.USER)
                 .build();
         return usuarioRepository.save(usuario);
     }
 
     public Usuario iniciarSesion(LoginUsuarioRequest datos) {
-        if (datos == null || estaVacio(datos.email()) || estaVacio(datos.password())) {
+        if (datos == null || estaVacio(datos.getEmail()) || estaVacio(datos.getPassword())) {
             throw new ArgumentInvalidException("Email y password son obligatorios");
         }
 
-        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(datos.email().trim())
+        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(datos.getEmail().trim())
                 .orElseThrow(() -> new ArgumentInvalidException("Email o password incorrectos"));
 
-        if (!passwordEncoder.matches(datos.password(), usuario.getPassword())) {
+        if (!passwordEncoder.matches(datos.getPassword(), usuario.getPassword())) {
             throw new ArgumentInvalidException("Email o password incorrectos");
         }
 
@@ -65,9 +65,9 @@ public class UsuarioService {
     }
 
     private void validarCampos(RegistroUsuarioRequest datos) {
-        if (datos == null || estaVacio(datos.nombre()) || estaVacio(datos.apellido())
-                || estaVacio(datos.nombreUsuario()) || estaVacio(datos.email())
-                || estaVacio(datos.password())) {
+        if (datos == null || estaVacio(datos.getNombre()) || estaVacio(datos.getApellido())
+                || estaVacio(datos.getNombreUsuario()) || estaVacio(datos.getEmail())
+                || estaVacio(datos.getPassword())) {
             throw new ArgumentInvalidException("Nombre, email y password son obligatorios");
         }
     }

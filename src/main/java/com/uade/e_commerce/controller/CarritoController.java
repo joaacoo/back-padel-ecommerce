@@ -78,7 +78,6 @@ public class CarritoController {
                 productoId,
                 productoNombre,
                 item.getCantidad(),
-                item.getPrecioUnitario()
-        );
+                item.getPrecioUnitario());
     }
 }

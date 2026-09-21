@@ -1,9 +1,16 @@
 package com.uade.e_commerce.dto;
 
-public record ResenaResponse(
-        Long id,
-        Long productoId,
-        Long usuarioId,
-        String comentario,
-        Integer puntuacion) {
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResenaResponse {
+    private Long id;
+    private Long productoId;
+    private Long usuarioId;
+    private String comentario;
+    private Integer puntuacion;
 }

@@ -39,12 +39,12 @@ public class ProductoController {
     @PostMapping
     public ResponseEntity<ProductoResponse> crearProducto(@RequestBody ProductoRequest request) {
         Producto producto = new Producto();
-        producto.setNombre(request.nombre());
-        producto.setDescripcion(request.descripcion());
-        producto.setPrecio(request.precio());
-        producto.setStock(request.stock());
-        producto.setCategoria(request.categoria());
-        producto.setImagenUrl(request.imagenUrl());
+        producto.setNombre(request.getNombre());
+        producto.setDescripcion(request.getDescripcion());
+        producto.setPrecio(request.getPrecio());
+        producto.setStock(request.getStock());
+        producto.setCategoria(request.getCategoria());
+        producto.setImagenUrl(request.getImagenUrl());
         
         Producto nuevoProducto = productoService.crearProducto(producto);
         return ResponseEntity.status(201).body(aResponse(nuevoProducto));
@@ -54,12 +54,12 @@ public class ProductoController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductoResponse> modificarProducto(@PathVariable Long id, @RequestBody ProductoRequest request) {
         Producto producto = new Producto();
-        producto.setNombre(request.nombre());
-        producto.setDescripcion(request.descripcion());
-        producto.setPrecio(request.precio());
-        producto.setStock(request.stock());
-        producto.setCategoria(request.categoria());
-        producto.setImagenUrl(request.imagenUrl());
+        producto.setNombre(request.getNombre());
+        producto.setDescripcion(request.getDescripcion());
+        producto.setPrecio(request.getPrecio());
+        producto.setStock(request.getStock());
+        producto.setCategoria(request.getCategoria());
+        producto.setImagenUrl(request.getImagenUrl());
         
         Producto actualizado = productoService.actualizarProducto(id, producto);
         return ResponseEntity.ok(aResponse(actualizado));

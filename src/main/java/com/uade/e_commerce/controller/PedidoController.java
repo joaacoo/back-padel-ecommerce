@@ -27,7 +27,7 @@ public class PedidoController {
     public ResponseEntity<PedidoResponse> crearPedido(
             @Valid @RequestBody CrearPedidoRequest datos) {
 
-        Pedido pedido = pedidoService.crearPedido(datos.usuarioId());
+        Pedido pedido = pedidoService.crearPedido(datos.getUsuarioId());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
