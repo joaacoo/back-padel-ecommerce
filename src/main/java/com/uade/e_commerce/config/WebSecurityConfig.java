@@ -33,7 +33,7 @@ public class WebSecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
+                        .requestMatchers("/api/usuarios/register", "/api/usuarios/login").permitAll()
 
                         .anyRequest().permitAll());
 

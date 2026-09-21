@@ -13,6 +13,7 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/api/pedidos")
 public class PedidoController {
 
     private final PedidoService pedidoService;
@@ -22,7 +23,7 @@ public class PedidoController {
     }
 
     // POST /api/pedidos
-    @PostMapping("/api/pedidos")
+    @PostMapping
     public ResponseEntity<PedidoResponse> crearPedido(
             @Valid @RequestBody CrearPedidoRequest datos) {
 
@@ -34,7 +35,7 @@ public class PedidoController {
     }
 
     // GET /api/pedidos/{id}
-    @GetMapping("/api/pedidos/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<PedidoResponse> obtenerPorId(@PathVariable Long id) {
 
         return ResponseEntity.ok(
@@ -42,8 +43,8 @@ public class PedidoController {
         );
     }
 
-    // GET /api/users/{id}/pedidos
-    @GetMapping("/api/users/{id}/pedidos")
+    // GET /api/pedidos/usuario/{id}
+    @GetMapping("/usuario/{id}")
     public ResponseEntity<List<PedidoResponse>> obtenerPedidosDeUsuario(
             @PathVariable Long id) {
 

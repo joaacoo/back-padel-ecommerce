@@ -32,16 +32,16 @@ public class UsuarioService {
 
         String passwordProtegida = passwordEncoder.encode(datos.password());
         Usuario usuario = Usuario.builder()
-        .nombre(datos.nombre().trim())
-        .apellido(datos.apellido().trim())
-        .nombreUsuario(datos.nombreUsuario().trim())
-        .email(email)
-        .password(passwordProtegida)
-        .sexo(datos.sexo())
-        .fechaNacimiento(datos.fechaNacimiento())
-        .role(Role.USER)
-        .build();
-return usuarioRepository.save(usuario);
+                .nombre(datos.nombre().trim())
+                .apellido(datos.apellido().trim())
+                .nombreUsuario(datos.nombreUsuario().trim())
+                .email(email)
+                .password(passwordProtegida)
+                .sexo(datos.sexo())
+                .fechaNacimiento(datos.fechaNacimiento())
+                .role(Role.USER)
+                .build();
+        return usuarioRepository.save(usuario);
     }
 
     public Usuario iniciarSesion(LoginUsuarioRequest datos) {
@@ -65,7 +65,8 @@ return usuarioRepository.save(usuario);
     }
 
     private void validarCampos(RegistroUsuarioRequest datos) {
-        if (datos == null || estaVacio(datos.nombre()) || estaVacio(datos.apellido()) || estaVacio(datos.nombreUsuario()) || estaVacio(datos.email())
+        if (datos == null || estaVacio(datos.nombre()) || estaVacio(datos.apellido())
+                || estaVacio(datos.nombreUsuario()) || estaVacio(datos.email())
                 || estaVacio(datos.password())) {
             throw new ArgumentInvalidException("Nombre, email y password son obligatorios");
         }

@@ -1,12 +1,13 @@
 package com.uade.e_commerce.controller;
 
+import com.uade.e_commerce.dto.ProductoRequest;
+import com.uade.e_commerce.dto.ProductoResponse;
 import com.uade.e_commerce.model.Producto;
 import com.uade.e_commerce.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/productos")
@@ -17,36 +18,54 @@ public class ProductoController {
 
     // GET /api/productos obtener catalogo completo de padel
     @GetMapping
-    public ResponseEntity<List<Producto>> obtenerTodos() {
-        List<Producto> productos = productoService.obtenerTodos();
+    public ResponseEntity<List<ProductoResponse>> obtenerTodos() {
+        List<ProductoResponse> productos = productoService.obtenerTodos().stream()
+                .map(this::aResponse)
+                .toList();
         return ResponseEntity.ok(productos);
     }
 
     // GET /api/productos/{id} obtener detalle de una paleta/producto especifico
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> obtenerPorId(@PathVariable Long id) { // Captura el {id} de la URL
+    public ResponseEntity<ProductoResponse> obtenerPorId(@PathVariable Long id) { // Captura el {id} de la URL
         Producto producto = productoService.obtenerPorId(id);
         if (producto == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(producto);
+        return ResponseEntity.ok(aResponse(producto));
     }
 
     // POST /api/productos Cargar un nuevo producto de padel al catalogo
     @PostMapping
-    public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
+    public ResponseEntity<ProductoResponse> crearProducto(@RequestBody ProductoRequest request) {
+        Producto producto = new Producto();
+        producto.setNombre(request.nombre());
+        producto.setDescripcion(request.descripcion());
+        producto.setPrecio(request.precio());
+        producto.setStock(request.stock());
+        producto.setCategoria(request.categoria());
+        producto.setImagenUrl(request.imagenUrl());
+        
         Producto nuevoProducto = productoService.crearProducto(producto);
-        return ResponseEntity.status(201).body(nuevoProducto);
+        return ResponseEntity.status(201).body(aResponse(nuevoProducto));
     }
 
-     // PUT /api/productos/{id} modificar un producto existente
+    // PUT /api/productos/{id} modificar un producto existente
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> modificarProducto(@PathVariable Long id, @RequestBody Producto producto) {
+    public ResponseEntity<ProductoResponse> modificarProducto(@PathVariable Long id, @RequestBody ProductoRequest request) {
+        Producto producto = new Producto();
+        producto.setNombre(request.nombre());
+        producto.setDescripcion(request.descripcion());
+        producto.setPrecio(request.precio());
+        producto.setStock(request.stock());
+        producto.setCategoria(request.categoria());
+        producto.setImagenUrl(request.imagenUrl());
+        
         Producto actualizado = productoService.actualizarProducto(id, producto);
-        return ResponseEntity.ok(actualizado);
+        return ResponseEntity.ok(aResponse(actualizado));
     }
 
-     // DELETE /api/productos/{id} eliminar un producto del catalogo
+    // DELETE /api/productos/{id} eliminar un producto del catalogo
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
@@ -55,8 +74,10 @@ public class ProductoController {
 
     // GET /api/productos/categoria/{categoria} filtrar productos por categoria
     @GetMapping("/categoria/{categoria}")
-    public ResponseEntity<List<Producto>> filtrarPorCategoria(@PathVariable String categoria) {
-        List<Producto> productos = productoService.filtrarPorCategoria(categoria);
+    public ResponseEntity<List<ProductoResponse>> filtrarPorCategoria(@PathVariable String categoria) {
+        List<ProductoResponse> productos = productoService.filtrarPorCategoria(categoria).stream()
+                .map(this::aResponse)
+                .toList();
         return ResponseEntity.ok(productos);
     }
 
@@ -65,5 +86,17 @@ public class ProductoController {
     public ResponseEntity<List<String>> obtenerCategorias() {
         List<String> categorias = productoService.obtenerCategorias();
         return ResponseEntity.ok(categorias);
+    }
+
+    private ProductoResponse aResponse(Producto producto) {
+        return new ProductoResponse(
+                producto.getId(),
+                producto.getNombre(),
+                producto.getDescripcion(),
+                producto.getPrecio(),
+                producto.getStock(),
+                producto.getCategoria(),
+                producto.getImagenUrl()
+        );
     }
 }
