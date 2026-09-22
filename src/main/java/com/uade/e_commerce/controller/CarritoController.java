@@ -1,5 +1,6 @@
 package com.uade.e_commerce.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.uade.e_commerce.dto.ActualizarCantidadRequest;
@@ -40,7 +41,7 @@ public class CarritoController {
 
     @PostMapping("/productos")
     public ResponseEntity<ItemCarritoResponse> agregarItem(@RequestParam Long usuarioId,
-            @RequestBody AgregarItemRequest request) {
+            @Valid @RequestBody AgregarItemRequest request) {
         ItemCarrito item = carritoService.addItemCarrito(
                 usuarioId, request.getProductoId(),
                 request.getCantidad(), request.getPrecioUnitario());
@@ -49,7 +50,7 @@ public class CarritoController {
 
     @PutMapping("/items/{itemId}")
     public ResponseEntity<ItemCarritoResponse> actualizar(@PathVariable Long itemId,
-            @RequestBody ActualizarCantidadRequest request) {
+            @Valid @RequestBody ActualizarCantidadRequest request) {
         ItemCarrito actualizado = carritoService.actualizarCantidad(itemId, request.getCantidad());
         return ResponseEntity.ok(aResponse(actualizado));
     }

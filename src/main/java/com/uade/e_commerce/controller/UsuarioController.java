@@ -1,5 +1,6 @@
 package com.uade.e_commerce.controller;
 
+import jakarta.validation.Valid;
 import com.uade.e_commerce.dto.LoginUsuarioRequest;
 import com.uade.e_commerce.dto.RegistroUsuarioRequest;
 import com.uade.e_commerce.dto.UsuarioResponse;
@@ -25,13 +26,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UsuarioResponse> registrar(@RequestBody RegistroUsuarioRequest datos) {
+    public ResponseEntity<UsuarioResponse> registrar(@Valid @RequestBody RegistroUsuarioRequest datos) {
         Usuario usuario = usuarioService.registrar(datos);
         return ResponseEntity.status(HttpStatus.CREATED).body(aResponse(usuario));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UsuarioResponse> iniciarSesion(@RequestBody LoginUsuarioRequest datos) {
+    public ResponseEntity<UsuarioResponse> iniciarSesion(@Valid @RequestBody LoginUsuarioRequest datos) {
         return ResponseEntity.ok(aResponse(usuarioService.iniciarSesion(datos)));
     }
 

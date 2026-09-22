@@ -1,5 +1,6 @@
 package com.uade.e_commerce.controller;
 
+import jakarta.validation.Valid;
 import com.uade.e_commerce.dto.ProductoRequest;
 import com.uade.e_commerce.dto.ProductoResponse;
 import com.uade.e_commerce.model.Producto;
@@ -37,7 +38,7 @@ public class ProductoController {
 
     // POST /api/productos Cargar un nuevo producto de padel al catalogo
     @PostMapping
-    public ResponseEntity<ProductoResponse> crearProducto(@RequestBody ProductoRequest request) {
+    public ResponseEntity<ProductoResponse> crearProducto(@Valid @RequestBody ProductoRequest request) {
         Producto producto = new Producto();
         producto.setNombre(request.getNombre());
         producto.setDescripcion(request.getDescripcion());
@@ -52,7 +53,7 @@ public class ProductoController {
 
     // PUT /api/productos/{id} modificar un producto existente
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoResponse> modificarProducto(@PathVariable Long id, @RequestBody ProductoRequest request) {
+    public ResponseEntity<ProductoResponse> modificarProducto(@PathVariable Long id, @Valid @RequestBody ProductoRequest request) {
         Producto producto = new Producto();
         producto.setNombre(request.getNombre());
         producto.setDescripcion(request.getDescripcion());

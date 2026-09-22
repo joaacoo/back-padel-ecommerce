@@ -1,5 +1,6 @@
 package com.uade.e_commerce.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class ResenaController {
 
     // POST /api/resenas/producto/{id} -> Crear reseña
     @PostMapping("/producto/{id}")
-    public ResponseEntity<ResenaResponse> crearResena(@PathVariable Long id, @RequestBody CrearResenaRequest request) {
+    public ResponseEntity<ResenaResponse> crearResena(@PathVariable Long id, @Valid @RequestBody CrearResenaRequest request) {
         Resena nueva = resenaService.crearResena(id, request.getUsuarioId(), request.getComentario(),
                 request.getPuntuacion());
         return ResponseEntity.status(HttpStatus.CREATED).body(aResponse(nueva));
