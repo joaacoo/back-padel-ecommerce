@@ -1,5 +1,6 @@
 package com.uade.e_commerce.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class CarritoService {
         return itemCarritoRepository.findByCarrito_Id(carrito.getId());
     }
 
-    @Transaccional
+    @Transactional
     public ItemCarrito addItemCarrito(Long usuarioId, Long productoId, Integer cantidad, BigDecimal precioUnitario) {
 
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
@@ -76,7 +77,7 @@ public class CarritoService {
         return itemCarritoRepository.save(nuevo);
     }
 
-    @Transaccional
+    @Transactional
     public ItemCarrito actualizarCantidad(Long itemId, Integer cantidad) {
         Optional<ItemCarrito> existente = itemCarritoRepository.findById(itemId);
         if (existente.isPresent()) {
@@ -90,7 +91,7 @@ public class CarritoService {
         throw new ResourceNotFoundException("Item no encontrado");
     }
 
-    @Transaccional
+    @Transactional
     public void eliminarItem(Long usuarioId, Long productoId) {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
         Optional<ItemCarrito> existente = itemCarritoRepository.findByCarrito_IdAndProducto_Id(carrito.getId(),
@@ -99,7 +100,7 @@ public class CarritoService {
         existente.ifPresent(itemCarritoRepository::delete);
     }
 
-    @Transaccional
+    @Transactional
     public void vaciarCarrito(Long usuarioId) {
         Carrito carrito = getCarritoByUsuarioId(usuarioId);
         List<ItemCarrito> items = itemCarritoRepository.findByCarrito_Id(carrito.getId());

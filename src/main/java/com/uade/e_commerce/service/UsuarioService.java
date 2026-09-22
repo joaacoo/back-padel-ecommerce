@@ -1,5 +1,6 @@
 package com.uade.e_commerce.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.uade.e_commerce.dto.LoginUsuarioRequest;
 import com.uade.e_commerce.dto.RegistroUsuarioRequest;
 import com.uade.e_commerce.exception.ArgumentInvalidException;
@@ -21,7 +22,7 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transaccional
+    @Transactional
     public Usuario registrar(RegistroUsuarioRequest datos) {
         validarCampos(datos);
 

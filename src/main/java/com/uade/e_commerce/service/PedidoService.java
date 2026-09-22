@@ -1,5 +1,6 @@
 package com.uade.e_commerce.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.uade.e_commerce.exception.ArgumentInvalidException;
 import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.ItemCarrito;
@@ -47,7 +48,7 @@ public class PedidoService {
     }
 
     // POST /api/pedidos
-    @Transaccional
+    @Transactional
     public Pedido crearPedido(Long usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));

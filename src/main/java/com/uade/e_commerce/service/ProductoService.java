@@ -1,5 +1,6 @@
 package com.uade.e_commerce.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.uade.e_commerce.exception.ResourceNotFoundException;
 import com.uade.e_commerce.model.Producto;
 import com.uade.e_commerce.repository.ProductoRepository;
@@ -24,13 +25,13 @@ public class ProductoService {
     }
 
     // POST /api/productos (Crear producto)
-    @Transaccional
+    @Transactional
     public Producto crearProducto(Producto producto) {
         return productoRepository.save(producto);
     }
 
     // PUT /api/productos/{id} (Modificar producto)
-    @Transaccional
+    @Transactional
     public Producto actualizarProducto(Long id, Producto datosActualizados) { // busca producto por ID con manejo de
                                                                               // excepcion y lo actualiza
         Producto producto = productoRepository.findById(id)
@@ -47,7 +48,7 @@ public class ProductoService {
     }
 
     // DELETE /api/productos/{id} (Eliminar producto)
-    @Transaccional
+    @Transactional
     public void eliminarProducto(Long id) { // busca producto por id con manejo de excepcion para eliminarlo
         if (!productoRepository.existsById(id)) {
             throw new ResourceNotFoundException("Producto no encontrado");

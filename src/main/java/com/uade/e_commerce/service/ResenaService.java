@@ -1,5 +1,6 @@
 package com.uade.e_commerce.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class ResenaService {
     private final UsuarioRepository usuarioRepository;
 
     // POST /api/productos/{id}/resenas
-    @Transaccional
+    @Transactional
     public Resena crearResena(Long productoId, Long usuarioId, String comentario, Integer puntuacion) {
         Producto producto = productoRepository.findById(productoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
@@ -44,7 +45,7 @@ public class ResenaService {
     }
 
     // DELETE /api/resenas/{id}
-    @Transaccional
+    @Transactional
     public void eliminarResena(Long id) {
         resenaRepository.deleteById(id);
     }
