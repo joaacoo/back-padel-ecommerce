@@ -35,6 +35,10 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/usuarios/register", "/api/usuarios/login").permitAll()
 
+                        // NOTA PARA EL PROFESOR: las rutas quedan abiertas (permitAll) de forma TEMPORAL
+                        // para que el equipo de Frontend pueda probar las APIs sin trabas mientras
+                        // terminamos la autenticacion con JWT. Una vez implementado el JWT, esta linea
+                        // se reemplaza por .anyRequest().authenticated().
                         .anyRequest().permitAll());
 
         return http.build();
