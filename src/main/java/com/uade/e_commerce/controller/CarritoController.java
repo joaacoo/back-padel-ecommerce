@@ -9,6 +9,11 @@ import com.uade.e_commerce.dto.ItemCarritoResponse;
 import com.uade.e_commerce.model.ItemCarrito;
 import com.uade.e_commerce.service.CarritoService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +37,14 @@ public class CarritoController {
     private final CarritoService carritoService;
 
     @GetMapping
+    @Operation(summary = "Consultar carrito", description = "Obtiene los items del carrito del usuario. Si el usuario existe y no tiene carrito, crea uno vacío.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Items del carrito obtenidos; la lista puede estar vacía"),
+            @ApiResponse(responseCode = "400", description = "El parámetro usuarioId falta o no es un número válido",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object"))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object")))
+    })
     public ResponseEntity<List<ItemCarritoResponse>> verCarrito(@RequestParam Long usuarioId) {
         List<ItemCarritoResponse> items = carritoService.getAllItemCarritos(usuarioId).stream()
                 .map(this::aResponse)
@@ -40,6 +53,14 @@ public class CarritoController {
     }
 
     @PostMapping("/productos")
+    @Operation(summary = "Agregar producto al carrito", description = "Agrega un producto al carrito del usuario o suma la cantidad al item existente, verificando el stock disponible.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Item agregado o cantidad acumulada en el item existente"),
+            @ApiResponse(responseCode = "400", description = "usuarioId ausente o inválido, cuerpo ausente o inválido, datos que no cumplen la validación o stock insuficiente",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object"))),
+            @ApiResponse(responseCode = "404", description = "Usuario o producto no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object")))
+    })
     public ResponseEntity<ItemCarritoResponse> agregarItem(@RequestParam Long usuarioId,
             @Valid @RequestBody AgregarItemRequest request) {
         ItemCarrito item = carritoService.addItemCarrito(
@@ -49,6 +70,14 @@ public class CarritoController {
     }
 
     @PutMapping("/items/{itemId}")
+    @Operation(summary = "Actualizar cantidad de un item", description = "Reemplaza la cantidad de un item del carrito, verificando que sea positiva y no supere el stock disponible.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cantidad del item actualizada"),
+            @ApiResponse(responseCode = "400", description = "itemId inválido, cuerpo ausente o inválido, cantidad que no cumple la validación o stock insuficiente",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object"))),
+            @ApiResponse(responseCode = "404", description = "Item no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object")))
+    })
     public ResponseEntity<ItemCarritoResponse> actualizar(@PathVariable Long itemId,
             @Valid @RequestBody ActualizarCantidadRequest request) {
         ItemCarrito actualizado = carritoService.actualizarCantidad(itemId, request.getCantidad());
@@ -56,12 +85,28 @@ public class CarritoController {
     }
 
     @DeleteMapping("/productos/{productoId}")
+    @Operation(summary = "Eliminar producto del carrito", description = "Elimina el item del producto indicado del carrito del usuario. Si el producto no está en el carrito, finaliza igualmente sin contenido.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Operación completada, incluso si el producto no estaba en el carrito", content = @Content),
+            @ApiResponse(responseCode = "400", description = "usuarioId ausente o identificadores que no son números válidos",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object"))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object")))
+    })
     public ResponseEntity<Void> eliminar(@RequestParam Long usuarioId, @PathVariable Long productoId) {
         carritoService.eliminarItem(usuarioId, productoId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping()
+    @Operation(summary = "Vaciar carrito", description = "Elimina todos los items del carrito del usuario. Si el usuario existe y no tiene carrito, crea uno vacío.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Carrito vacío, sin contenido en la respuesta", content = @Content),
+            @ApiResponse(responseCode = "400", description = "El parámetro usuarioId falta o no es un número válido",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object"))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
+                    content = @Content(mediaType = "application/json", schema = @Schema(type = "object")))
+    })
     public ResponseEntity<Void> vaciar(@RequestParam Long usuarioId) {
         carritoService.vaciarCarrito(usuarioId);
         return ResponseEntity.noContent().build();
