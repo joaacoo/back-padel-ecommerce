@@ -1,5 +1,6 @@
 package com.uade.e_commerce.model;
 
+import java.math.BigDecimal;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,7 @@ public class Producto {
 
     private String nombre; // Paleta addidas
     private String descripcion; // Paleta de control ideal para jugadores principiantes
-    private Double precio; // 200000
+    private BigDecimal precio; // 200000
     private Integer stock; // 15
     private String categoria; // Paletas
     private String imagenUrl; // URL de la foto del producto

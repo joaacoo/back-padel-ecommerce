@@ -12,6 +12,7 @@ import com.uade.e_commerce.repository.ProductoRepository;
 import com.uade.e_commerce.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class PedidoService {
             throw new ArgumentInvalidException("El carrito está vacío");
         }
 
-        double total = 0.0;
+        BigDecimal total = BigDecimal.ZERO;
         for (ItemCarrito item : items) {
             Producto producto = item.getProducto();
             if (producto.getStock() < item.getCantidad()) {
@@ -66,7 +67,7 @@ public class PedidoService {
             }
             producto.setStock(producto.getStock() - item.getCantidad());
             productoRepository.save(producto);
-            total += item.getPrecioUnitario().doubleValue() * item.getCantidad();
+            total = total.add(item.getPrecioUnitario().multiply(BigDecimal.valueOf(item.getCantidad())));
         }
 
         Pedido pedido = new Pedido();

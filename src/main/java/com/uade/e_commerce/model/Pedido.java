@@ -1,5 +1,6 @@
 package com.uade.e_commerce.model;
 
+import java.math.BigDecimal;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class Pedido {
 
     private LocalDateTime fecha;
 
-    private Double total;
+    private BigDecimal total;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
