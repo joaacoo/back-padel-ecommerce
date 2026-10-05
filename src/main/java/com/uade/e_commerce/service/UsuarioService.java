@@ -31,6 +31,10 @@ public class UsuarioService {
             throw new ArgumentInvalidException("El email ya esta registrado");
         }
 
+        if (usuarioRepository.existsByNombreUsuarioIgnoreCase(datos.getNombreUsuario().trim())) {
+            throw new ArgumentInvalidException("El nombre de usuario ya esta registrado");
+        }
+
         String passwordProtegida = passwordEncoder.encode(datos.getPassword());
         Usuario usuario = Usuario.builder()
                 .nombre(datos.getNombre().trim())

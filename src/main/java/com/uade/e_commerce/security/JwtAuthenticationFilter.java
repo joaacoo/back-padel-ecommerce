@@ -33,6 +33,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
+        System.out.println("=== HEADER RECIBIDO EN LA PETICION ===");
+        System.out.println(header);
+        
         if (header != null && header.regionMatches(true, 0, "Bearer ", 0, 7)
                 && SecurityContextHolder.getContext().getAuthentication() == null) {
             try {
@@ -52,6 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);
             } catch (JwtException | IllegalArgumentException | AuthenticationException ex) {
+                ex.printStackTrace();
                 SecurityContextHolder.clearContext();
                 entryPoint.commence(request, response, new BadCredentialsException("JWT invalido", ex));
                 return;

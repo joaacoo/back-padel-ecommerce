@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/auth") // o "/api/usuarios" si prefieren mantener la ruta anterior
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
@@ -25,8 +25,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginUsuarioRequest request) {
         // 1. Autenticar usando el AuthenticationManager
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         // 2. Si la autenticación es exitosa, generamos el JWT
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
